@@ -1,2 +1,1 @@
-# web.api-net.core
-REST API Demo using .NET Core 8
+# This is a REST API Demo I create using .NET Core 8 for learning purposes
