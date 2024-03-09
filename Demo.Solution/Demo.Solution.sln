@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34601.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.WebAPI", "Demo.WebAPI\Demo.WebAPI.csproj", "{E33A4B5C-3A42-4988-9CEA-6200B6B1C373}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Controllers", "Demo.Controllers\Demo.Controllers.csproj", "{AB007D6A-A713-41C5-BF9A-CFEB58A8D3B5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Web.API", "Demo.Web.API\Demo.Web.API.csproj", "{91CC71E1-F9B1-4FFF-A8B7-80B0A0C9A111}"
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E33A4B5C-3A42-4988-9CEA-6200B6B1C373}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E33A4B5C-3A42-4988-9CEA-6200B6B1C373}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E33A4B5C-3A42-4988-9CEA-6200B6B1C373}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E33A4B5C-3A42-4988-9CEA-6200B6B1C373}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AB007D6A-A713-41C5-BF9A-CFEB58A8D3B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AB007D6A-A713-41C5-BF9A-CFEB58A8D3B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB007D6A-A713-41C5-BF9A-CFEB58A8D3B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
