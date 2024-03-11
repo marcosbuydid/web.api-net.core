@@ -15,16 +15,18 @@ namespace Demo.Web.API.Controllers
     public class LoginController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        public LoginController(IConfiguration configuration)
+        private readonly ApplicationDbContext _context;
+        public LoginController(IConfiguration configuration, ApplicationDbContext context)
         {
             _configuration = configuration;
+            _context = context;
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult Login([FromBody] UserDTO userDTO, ApplicationDbContext db)
+        public ActionResult Login([FromBody] UserDTO userDTO)
         {
-            var user = db.Users.Where(user => user.Email == userDTO.Email && user.Password == userDTO.Password).FirstOrDefault();
+            var user = _context.Users.Where(user => user.Email == userDTO.Email && user.Password == userDTO.Password).FirstOrDefault();
 
             if (user == null)
             {
