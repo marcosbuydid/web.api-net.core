@@ -1,8 +1,11 @@
 using Demo.Web.API.DatabaseContext;
+using Demo.Web.API.Interfaces;
+using Demo.Web.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -30,7 +33,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
-    });
+    }
+);
+
+builder.Services.Add(new ServiceDescriptor(typeof(IAuthService), typeof(AuthService), ServiceLifetime.Singleton));
 
 var app = builder.Build();
 

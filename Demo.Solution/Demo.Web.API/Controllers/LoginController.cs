@@ -1,12 +1,9 @@
 ﻿using Demo.Web.API.DatabaseContext;
+using Demo.Web.API.Interfaces;
 using Demo.Web.API.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+
 
 namespace Demo.Web.API.Controllers
 {
@@ -14,12 +11,12 @@ namespace Demo.Web.API.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _context;
-        public LoginController(IConfiguration configuration, ApplicationDbContext context)
+        private readonly IAuthService _authService;
+        public LoginController(ApplicationDbContext context, IAuthService authService)
         {
-            _configuration = configuration;
             _context = context;
+            _authService = authService;
         }
 
         [AllowAnonymous]
@@ -34,31 +31,11 @@ namespace Demo.Web.API.Controllers
             }
             else
             {
-                var token = GenerateToken(user);
+                var token = _authService.GenerateToken(user);
                 //return Ok(token);
                 return new JsonResult(token);
             }
         }
 
-        private string GenerateToken(User user)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Name),
-                new Claim(ClaimTypes.Role,user.Role)
-            };
-
-            var token = new JwtSecurityToken(
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Audience"],
-                claims,
-                expires: DateTime.Now.AddMinutes(60),
-                signingCredentials: credentials
-                );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
     }
 }
