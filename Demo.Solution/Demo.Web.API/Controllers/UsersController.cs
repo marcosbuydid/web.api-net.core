@@ -4,6 +4,7 @@ using Demo.Web.API.DatabaseContext;
 using Demo.Web.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Demo.Web.API.Interfaces;
 
 namespace Demo.Web.API.Controllers
 {
@@ -12,10 +13,12 @@ namespace Demo.Web.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IAuthService _authService;
 
-        public UsersController(ApplicationDbContext context)
+        public UsersController(ApplicationDbContext context, IAuthService authService)
         {
             _context = context;
+            _authService = authService;
         }
 
         // GET: api/Users
@@ -71,7 +74,6 @@ namespace Demo.Web.API.Controllers
 
         // POST: api/Users
         [HttpPost]
-        [Authorize]
         public async Task<ActionResult<User>> PostUser([FromBody] User userToCreate)
         {
             //[Authorize(Roles = "Administrator")]
@@ -80,30 +82,35 @@ namespace Demo.Web.API.Controllers
             //is a better solution and for custom messages middlewares are used.
 
             //Authorize
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var validatedToken = _authService.ValidateToken(token);
 
-            var userClaims = identity.Claims;
-            var role = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
-
-            if (role == "Administrator")
+            //if user is autenticated
+            if (validatedToken != null)
             {
-                var user = _context.Users.Where(user => user.Email == userToCreate.Email).FirstOrDefault();
-                if (user != null)
+                //get user role
+                var role = _authService.GetUserRole(validatedToken);
+
+                if (role == "Administrator")
                 {
-                    return StatusCode(201, "Cannot create user, email is already registered");
+                    var user = _context.Users.Where(user => user.Email == userToCreate.Email).FirstOrDefault();
+                    if (user != null)
+                    {
+                        return new JsonResult(new { error = "Cannot create user, email is already registered" }) { StatusCode = StatusCodes.Status202Accepted };
+                    }
+
+                    _context.Users.Add(userToCreate);
+                    await _context.SaveChangesAsync();
+
+                    return CreatedAtAction("GetUser", new { id = userToCreate.Id }, userToCreate);
                 }
-
-                _context.Users.Add(userToCreate);
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction("GetUser", new { id = userToCreate.Id }, userToCreate);
-
+                else
+                {
+                    return new JsonResult(new { authorization = "Only Administrators can create users" }) { StatusCode = StatusCodes.Status403Forbidden };
+                }
             }
-            else
-            {
-                return StatusCode(403, "Only Administrators can create users");
-            }
-
+            //return StatusCode(401, "Authorization required");
+            return new JsonResult(new { authorization = "Authorization required" }) { StatusCode = StatusCodes.Status401Unauthorized };
         }
 
         // DELETE: api/Users/5

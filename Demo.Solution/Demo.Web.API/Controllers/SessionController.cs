@@ -9,13 +9,11 @@ namespace Demo.Web.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class SessionController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IAuthService _authService;
-        public LoginController(ApplicationDbContext context, IAuthService authService)
+        public SessionController(IAuthService authService)
         {
-            _context = context;
             _authService = authService;
         }
 
@@ -23,7 +21,7 @@ namespace Demo.Web.API.Controllers
         [HttpPost]
         public ActionResult Login([FromBody] UserDTO userDTO)
         {
-            var user = _context.Users.Where(user => user.Email == userDTO.Email && user.Password == userDTO.Password).FirstOrDefault();
+            var user = _authService.ValidateUser(userDTO.Email, userDTO.Password);
 
             if (user == null)
             {
