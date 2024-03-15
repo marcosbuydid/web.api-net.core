@@ -76,11 +76,6 @@ namespace Demo.Web.API.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser([FromBody] User userToCreate)
         {
-            //[Authorize(Roles = "Administrator")]
-            //if the user is not administrator return automatically
-            //forbidden result and not enters to the endpoint.
-            //is a better solution and for custom messages middlewares are used.
-
             //Authorize
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             var validatedToken = _authService.ValidateToken(token);
