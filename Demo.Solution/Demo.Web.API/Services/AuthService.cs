@@ -24,7 +24,8 @@ namespace Demo.Web.API.Services
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Name),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role,user.Role)
             };
 
@@ -86,9 +87,30 @@ namespace Demo.Web.API.Services
 
         public string GetUserRole(SecurityToken validatedToken)
         {
-            var jwtToken = (JwtSecurityToken)validatedToken;
-            var role = jwtToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
-            return role;
+            var token = (JwtSecurityToken)validatedToken;
+            if (token != null)
+            {
+                var role = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+                return role;
+            }
+            return null;
+        }
+
+        public string RefreshToken(SecurityToken validatedToken)
+        {
+            //var validatedToken = ValidateToken(jwtToken.ToString());
+            var token = (JwtSecurityToken)validatedToken;
+            //we use a validated token
+            if (token != null)
+            {
+                //if token is valid user is authenticated
+                var userEmail = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+                var user = _context.Users.Where(user => user.Email == userEmail).FirstOrDefault();
+
+                //we generate a new token with 60min of duration
+                return GenerateToken(user);
+            }
+            return null;
         }
     }
 }

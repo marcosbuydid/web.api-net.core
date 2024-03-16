@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Demo.Web.API.DatabaseContext;
 using Demo.Web.API.Models;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using Demo.Web.API.Interfaces;
 
 namespace Demo.Web.API.Controllers

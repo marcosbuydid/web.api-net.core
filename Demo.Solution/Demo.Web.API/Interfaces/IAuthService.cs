@@ -1,5 +1,6 @@
 ﻿using Demo.Web.API.Models;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Demo.Web.API.Interfaces
 {
@@ -9,5 +10,6 @@ namespace Demo.Web.API.Interfaces
         User ValidateUser(string userEmail, string userPassword);
         SecurityToken ValidateToken(string token);
         string GetUserRole(SecurityToken validatedToken);
+        string RefreshToken(SecurityToken validatedToken);
     }
 }
