@@ -1,6 +1,5 @@
 ﻿using Demo.Web.API.Models;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace Demo.Web.API.Interfaces
 {

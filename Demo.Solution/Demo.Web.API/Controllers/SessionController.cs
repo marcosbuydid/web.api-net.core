@@ -1,4 +1,5 @@
-﻿using Demo.Web.API.Interfaces;
+﻿using Demo.Web.API.Filters;
+using Demo.Web.API.Interfaces;
 using Demo.Web.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,22 +34,15 @@ namespace Demo.Web.API.Controllers
             }
         }
 
-        
+        [AuthFilter]
         [HttpPost]
         [Route("refreshtoken")]
         public ActionResult RefreshToken()
         {
-            //Authorize
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             var validatedToken = _authService.ValidateToken(token);
-
-            //if user is autenticated
-            if (validatedToken != null)
-            {
-                var refreshToken = _authService.RefreshToken(validatedToken);
-                return new JsonResult(new { token = refreshToken }) { StatusCode = StatusCodes.Status200OK };
-            }
-            return new JsonResult(new { authorization = "Authorization required" }) { StatusCode = StatusCodes.Status401Unauthorized };
+            var refreshToken = _authService.RefreshToken(validatedToken);
+            return new JsonResult(new { token = refreshToken }) { StatusCode = StatusCodes.Status200OK };
         }
 
     }
