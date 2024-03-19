@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demo.Web.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240310183613_Initial")]
+    [Migration("20240319145608_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,6 +24,28 @@ namespace Demo.Web.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Demo.Web.API.Models.Session", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sessions");
+                });
 
             modelBuilder.Entity("Demo.Web.API.Models.User", b =>
                 {

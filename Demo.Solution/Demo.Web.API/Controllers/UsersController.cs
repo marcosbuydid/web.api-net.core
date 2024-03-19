@@ -15,7 +15,6 @@ namespace Demo.Web.API.Controllers
         public UsersController(ApplicationDbContext context)
         {
             _context = context;
-            //_authService = authService;
         }
 
         // GET: api/Users
