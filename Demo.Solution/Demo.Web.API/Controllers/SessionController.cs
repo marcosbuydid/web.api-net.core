@@ -41,7 +41,7 @@ namespace Demo.Web.API.Controllers
 
                 Session session = new Session();
                 session.Token = jwtToken;
-                session.Email = userDTO.Email;
+                session.User = user;
                 session.CreatedAt = DateTime.UtcNow;
 
                 _context.Sessions.Add(session);

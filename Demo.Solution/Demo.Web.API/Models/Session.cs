@@ -11,7 +11,7 @@ namespace Demo.Web.API.Models
         public string Token { get; set; }
 
         [Required(ErrorMessage = "Email cannot be empty or null")]
-        public string Email { get; set; }
+        public User User { get; set; }
 
         [Required(ErrorMessage = "Creation date cannot be empty or null")]
         public DateTime CreatedAt { get; set; }
