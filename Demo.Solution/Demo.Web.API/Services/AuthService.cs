@@ -1,10 +1,11 @@
 ﻿using Demo.Web.API.DatabaseContext;
 using Demo.Web.API.Interfaces;
 using Demo.Web.API.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using NuGet.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Demo.Web.API.Services
@@ -39,6 +40,13 @@ namespace Demo.Web.API.Services
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public string GenerateGuidToken()
+        {
+            Span<byte> bytes = stackalloc byte[16];
+            RandomNumberGenerator.Fill(bytes);
+            return new Guid(bytes).ToString();
         }
 
         public User ValidateUser(string UserDTOEmail, string UserDTOPassword)
@@ -95,6 +103,20 @@ namespace Demo.Web.API.Services
                 return role;
             }
             return null;
+        }
+
+        public User ValidateSession(string token)
+        {
+            var session = _context.Sessions.Where(session => session.Token == token).Include(s => s.User).FirstOrDefault();
+
+            if (session != null)
+            {
+                return session.User;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public string RefreshToken(SecurityToken validatedToken)

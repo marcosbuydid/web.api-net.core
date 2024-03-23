@@ -12,7 +12,7 @@ namespace Demo.Web.API.Filters
         {
             appRoles = roles;
             appRoles[0] = "Administrator";
-           
+
         }
         public void OnAuthorization(AuthorizationFilterContext context)
         {
@@ -20,11 +20,15 @@ namespace Demo.Web.API.Filters
 
             //If token is null user is not authenticated
             var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            var validatedToken = sessionLogic.ValidateToken(token);
-            var userRole = sessionLogic.GetUserRole(validatedToken);
-            for(int i = 0; i< appRoles.Length; i++)
+
+            //var validatedToken = sessionLogic.ValidateToken(token);
+            //var userRole = sessionLogic.GetUserRole(validatedToken);
+
+            var user = sessionLogic.ValidateSession(token);
+
+            for (int i = 0; i < appRoles.Length; i++)
             {
-                if (!appRoles[i].Contains(userRole))
+                if (!appRoles[i].Contains(user.Role))
                 {
                     context.Result = new ObjectResult(new { Message = "Unauthorized to perform this action" })
                     {

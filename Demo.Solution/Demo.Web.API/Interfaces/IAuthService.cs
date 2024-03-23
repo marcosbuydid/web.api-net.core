@@ -6,9 +6,11 @@ namespace Demo.Web.API.Interfaces
     public interface IAuthService
     {
         string GenerateToken(User user);
+        string GenerateGuidToken();
         User ValidateUser(string userEmail, string userPassword);
         SecurityToken ValidateToken(string token);
         string GetUserRole(SecurityToken validatedToken);
         string RefreshToken(SecurityToken validatedToken);
+        User ValidateSession(string token);
     }
 }

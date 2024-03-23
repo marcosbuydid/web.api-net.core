@@ -13,7 +13,17 @@ namespace Demo.Web.API.Filters
             //If token is null user is not authenticated
             var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
-            if (sessionLogic.ValidateToken(token) == null)
+            //if (sessionLogic.ValidateToken(token) == null)
+            //{
+            //    context.Result = new ObjectResult(new { Message = "Authorization required" })
+            //    {
+            //        StatusCode = 401
+            //    };
+            //}
+
+            var user = sessionLogic.ValidateSession(token);
+
+            if ( user == null)
             {
                 context.Result = new ObjectResult(new { Message = "Authorization required" })
                 {
