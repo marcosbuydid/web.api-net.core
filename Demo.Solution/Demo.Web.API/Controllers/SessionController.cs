@@ -4,7 +4,6 @@ using Demo.Web.API.Interfaces;
 using Demo.Web.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace Demo.Web.API.Controllers
@@ -52,7 +51,7 @@ namespace Demo.Web.API.Controllers
             }
         }
 
-        [AuthFilter]
+        [AuthorizationFilter("Administrator,User")]
         [HttpPost]
         [Route("refreshtoken")]
         public ActionResult RefreshToken()
