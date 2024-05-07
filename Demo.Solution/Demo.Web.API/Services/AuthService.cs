@@ -2,7 +2,6 @@
 using Demo.Web.API.Interfaces;
 using Demo.Web.API.Models;
 using Microsoft.IdentityModel.Tokens;
-using NuGet.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

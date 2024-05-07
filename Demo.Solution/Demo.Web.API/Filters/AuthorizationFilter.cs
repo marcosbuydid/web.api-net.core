@@ -4,8 +4,13 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Demo.Web.API.Filters
 {
-    public class AuthFilter : Attribute, IAuthorizationFilter
+    public class AuthorizationFilter : Attribute, IAuthorizationFilter
     {
+        private List<string> _role;
+        public AuthorizationFilter(string role = "")
+        {
+            _role = role.Split(",").ToList();
+        }
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             var sessionLogic = this.GetAuthService(context);
@@ -13,12 +18,18 @@ namespace Demo.Web.API.Filters
             //If token is null user is not authenticated
             var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
-            if (sessionLogic.ValidateToken(token) == null)
+            var validatedToken = sessionLogic.ValidateToken(token);
+            var userRole = sessionLogic.GetUserRole(validatedToken);
+
+            if (validatedToken == null)
             {
-                context.Result = new ObjectResult(new { Message = "Authorization required" })
-                {
-                    StatusCode = 401
-                };
+                context.Result = new JsonResult(new { Token = "Invalid Token" })
+                { StatusCode = StatusCodes.Status401Unauthorized };
+            }
+            else if (!_role.Contains(userRole))
+            {
+                context.Result = new JsonResult(new { Status = "Unauthorized to perform this action" })
+                { StatusCode = StatusCodes.Status403Forbidden };
             }
         }
 

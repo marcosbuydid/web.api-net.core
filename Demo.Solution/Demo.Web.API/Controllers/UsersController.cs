@@ -19,7 +19,7 @@ namespace Demo.Web.API.Controllers
 
         // GET: api/Users
         [HttpGet]
-        [AuthFilter]
+        [AuthorizationFilter("Administrator")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
@@ -70,8 +70,7 @@ namespace Demo.Web.API.Controllers
         }
 
         // POST: api/Users
-        [AuthFilter]
-        [RoleFilter("Administrator")]
+        [AuthorizationFilter("Administrator")]
         [HttpPost]
         public async Task<ActionResult<User>> PostUser([FromBody] User userToCreate)
         {
