@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Enable CORS
 builder.Services.AddCors(options => {
-    options.AddPolicy("AllowWebOrigin", p => p.WithOrigins("http://localhost:5283").AllowAnyMethod().AllowAnyHeader());
+    options.AddPolicy("AllowWebOrigin", p => p.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader());
 });
 
 builder.Services.AddControllers();
@@ -26,6 +26,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.Add(new ServiceDescriptor(typeof(IAuthService), typeof(AuthService), ServiceLifetime.Scoped));
 
 var app = builder.Build();
+
+app.UseCors("AllowWebOrigin");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
